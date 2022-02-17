@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -45,8 +46,18 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
 		.formLogin()
 		.loginPage("/login").permitAll()
 		.defaultSuccessUrl("/courses", true) //redirecionando para uma pagina padrão após login.
+		.passwordParameter("password")
+		.usernameParameter("username")
 		.and()
-		.rememberMe().tokenValiditySeconds(TimeUnit.DAYS.toSeconds(21)); // defaults to 2 weeks
+		.rememberMe().tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21)) // defaults to 2 weeks, now 21 days
+		.key("somethingverysecured") //md5 key
+		.rememberMeParameter("remember-me")
+		.and().logout().logoutUrl("/logout")
+		.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) //if csrf disable use this, else, delete this line and logout method should be post
+		.clearAuthentication(true)
+		.invalidateHttpSession(true)
+		.deleteCookies("JSESSIONID", "remember-me")
+		.logoutSuccessUrl("/login");  
 	}
 
 	@Override
