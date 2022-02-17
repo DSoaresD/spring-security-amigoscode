@@ -1,5 +1,7 @@
 package com.example.demo.security;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -41,7 +42,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
 		.anyRequest()
 		.authenticated()
 		.and()
-		.httpBasic();
+		.formLogin()
+		.loginPage("/login").permitAll()
+		.defaultSuccessUrl("/courses", true) //redirecionando para uma pagina padrão após login.
+		.and()
+		.rememberMe().tokenValiditySeconds(TimeUnit.DAYS.toSeconds(21)); // defaults to 2 weeks
 	}
 
 	@Override
