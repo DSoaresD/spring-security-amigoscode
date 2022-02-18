@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Repository;
 
 import com.example.demo.security.ApplicationUserRole;
 import com.google.common.collect.Lists;
 
+@Repository("fake")
 public class FakeApplicationUserDao implements ApplicationUserDao{
 	
 	private final PasswordEncoder passwordEncoder;	
